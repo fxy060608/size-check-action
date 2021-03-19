@@ -2364,7 +2364,7 @@ function readFileSizeSync(filePath) {
     //   )} min:${minSize} / gzip:${gzippedSize} / brotli:${compressedSize}\n`
     // )
     return {
-        name: path.basename(filePath),
+        name: filePath,
         size: gzipped.length,
         brotli: compressed.length,
         minSize: file.length,
