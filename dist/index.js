@@ -2263,6 +2263,7 @@ function fetchPreviousComment(octokit, repo, pr) {
 function getOptions() {
     return {
         token: core_1.getInput('github_token'),
+        manager: core_1.getInput('manager'),
         buildScript: core_1.getInput('build_script'),
         files: core_1.getInput('files').split(' '),
         directory: core_1.getInput('directory') || process.cwd(),
@@ -2270,7 +2271,7 @@ function getOptions() {
 }
 function compareToRef(ref, pr, repo) {
     return __awaiter(this, void 0, void 0, function* () {
-        const { token, buildScript, files, directory } = getOptions();
+        const { token, manager, buildScript, files, directory } = getOptions();
         const octokit = new github_1.GitHub(token);
         const term = new Term_1.default();
         const limit = new SizeLimit_1.default();
@@ -2278,12 +2279,14 @@ function compareToRef(ref, pr, repo) {
         const current = yield term.execSizeLimit({
             branch: null,
             files,
+            manager,
             buildScript,
             directory,
         });
         const base = yield term.execSizeLimit({
             branch: ref,
             files,
+            manager,
             buildScript,
             directory,
         });
@@ -11124,9 +11127,9 @@ const size_1 = __webpack_require__(139);
 const INSTALL_STEP = 'install';
 const BUILD_STEP = 'build';
 class Term {
-    execSizeLimit({ branch, files, buildScript, directory, }) {
+    execSizeLimit({ branch, files, manager, buildScript, directory, }) {
         return __awaiter(this, void 0, void 0, function* () {
-            const manager = has_yarn_1.default() ? 'yarn' : 'npm';
+            manager = manager ? manager : has_yarn_1.default() ? 'yarn' : 'npm';
             if (branch) {
                 try {
                     yield exec_1.exec(`git fetch origin ${branch} --depth=1`);

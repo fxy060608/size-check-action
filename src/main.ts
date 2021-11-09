@@ -36,6 +36,7 @@ type GHPullRequest = WebhookPayload['pull_request']
 function getOptions() {
   return {
     token: getInput('github_token'),
+    manager: getInput('manager'),
     buildScript: getInput('build_script'),
     files: getInput('files').split(' '),
     directory: getInput('directory') || process.cwd(),
@@ -43,7 +44,7 @@ function getOptions() {
 }
 
 async function compareToRef(ref: string, pr?: GHPullRequest, repo?: GHRepo) {
-  const { token, buildScript, files, directory } = getOptions()
+  const { token, manager, buildScript, files, directory } = getOptions()
 
   const octokit = new GitHub(token)
   const term = new Term()
@@ -53,6 +54,7 @@ async function compareToRef(ref: string, pr?: GHPullRequest, repo?: GHRepo) {
   const current = await term.execSizeLimit({
     branch: null,
     files,
+    manager,
     buildScript,
     directory,
   })
@@ -60,6 +62,7 @@ async function compareToRef(ref: string, pr?: GHPullRequest, repo?: GHRepo) {
   const base = await term.execSizeLimit({
     branch: ref,
     files,
+    manager,
     buildScript,
     directory,
   })

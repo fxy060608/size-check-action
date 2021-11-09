@@ -9,15 +9,17 @@ class Term {
   async execSizeLimit({
     branch,
     files,
+    manager,
     buildScript,
     directory,
   }: {
     branch?: string
     files: string[]
+    manager: 'yarn' | 'npm' | 'pnpm' | string
     buildScript: string
     directory?: string
   }) {
-    const manager = hasYarn() ? 'yarn' : 'npm'
+    manager = manager ? manager : hasYarn() ? 'yarn' : 'npm'
 
     if (branch) {
       try {
